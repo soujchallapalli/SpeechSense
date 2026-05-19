@@ -1,4 +1,4 @@
-from speechsense.foo import foo
+from src.speechsense.main import foo
 
 
 def test_foo():
