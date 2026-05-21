@@ -2,8 +2,7 @@
 install: ## Install the poetry environment and install the pre-commit hooks
 	@echo "🚀 Creating virtual environment using pyenv and poetry"
 	@poetry install
-	@ poetry run pre-commit install
-	@poetry shell
+	@poetry run pre-commit install
 
 .PHONY: check
 check: ## Run code quality tools.
@@ -14,12 +13,12 @@ check: ## Run code quality tools.
 	@echo "🚀 Static type checking: Running mypy"
 	@poetry run mypy
 	@echo "🚀 Checking for obsolete dependencies: Running deptry"
-	@poetry run deptry .
+	@poetry run deptry src
 
 .PHONY: test
 test: ## Test the code with pytest
 	@echo "🚀 Testing code: Running pytest"
-	@poetry run pytest --doctest-modules
+	@poetry run pytest tests --cov --cov-report=term-missing
 
 .PHONY: build
 build: clean-build ## Build wheel file using poetry
