@@ -1,1 +1,1 @@
-::: speechsense.foo
+::: speechsense.main
