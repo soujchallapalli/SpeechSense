@@ -1,11 +1,13 @@
 # SpeechSense
 
-A speech processing pipeline.
+A speech processing pipeline for recording, transcribing, correcting, enriching, and analysing meeting speech.
 
 ## Prerequisites
 
 - Python 3.10+
 - [Poetry](https://python-poetry.org/docs/#installation)
+- For Gemini: a [Gemini API key](https://aistudio.google.com/apikey)
+- For Ollama: [Ollama](https://ollama.com/download) running locally with `gemma3` pulled
 
 ## Setup
 
@@ -23,6 +25,41 @@ make install
 
 This runs `poetry install` and sets up pre-commit hooks for automatic linting/formatting on commit.
 
+## Usage
+
+### Correct transcripts with AI (Stage 2)
+
+Read a CSV with `raw_text_vosk`, send each transcript to AI for correction, and write an enriched CSV with a `text` column.
+
+**With Gemini (default):**
+
+```bash
+export GEMINI_API_KEY="your_key_here"
+correct-transcripts --input raw.csv --output corrected.csv
+```
+
+**With Ollama (local):**
+
+```bash
+correct-transcripts --input raw.csv --output corrected.csv --provider ollama
+```
+
+**Input CSV format:**
+
+| timestamp             | name    | raw_text_vosk                                  | time_taken_sec |
+| --------------------- | ------- | ---------------------------------------------- | -------------- |
+| `2026-04-28T10:00:05` | Stelios | `helo team today we discuss mobile app growth` | `6.2`          |
+
+**Output CSV format:** same columns plus a `text` column with the AI-corrected transcript.
+
+### Available commands
+
+| Command               | Description                          |
+| --------------------- | ------------------------------------ |
+| `correct-transcripts` | Correct raw Vosk transcripts with AI |
+
+All commands accept `--help` for full usage.
+
 ## Development
 
 ### Running Tests
@@ -34,7 +71,7 @@ make test
 Runs `pytest` with coverage reporting. To run a specific test:
 
 ```bash
-poetry run pytest tests/test_foo.py -v
+poetry run pytest tests/test_correction.py -v
 ```
 
 ### Linting and Formatting
@@ -91,8 +128,18 @@ make help
 ```
 SpeechSense/
 ├── src/
-│   └── speechsense/      # Main package source code
-├── tests/                 # Test files
+│   └── speechsense/
+│       ├── __init__.py
+│       ├── main.py
+│       ├── correction.py              # AI correction providers (Gemini, Ollama)
+│       └── correction_pipeline.py     # CSV load → correct → save pipeline
+├── tests/
+│   ├── test_foo.py
+│   └── test_correction.py             # Tests for correction module + pipeline
+├── data/
+│   ├── README.md                      # Project brief
+│   ├── requirements.txt
+│   └── examples/                      # Starter example scripts
 ├── docs/                  # MkDocs documentation
 ├── pyproject.toml         # Project config, dependencies, tool settings
 ├── Makefile               # Development workflow commands
