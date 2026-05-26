@@ -32,7 +32,8 @@ def correct_with_gemini(
     client = genai.Client(api_key=key)
     prompt = CORRECTION_PROMPT.format(text=text)
     response = client.models.generate_content(model=model, contents=prompt)
-    return response.text.strip()
+    corrected = response.text or ""
+    return corrected.strip()
 
 
 def correct_with_ollama(
@@ -42,13 +43,14 @@ def correct_with_ollama(
 ) -> str:
     """Send a transcript to a local Ollama model and return the corrected version."""
     prompt = CORRECTION_PROMPT.format(text=text)
-    response = requests.post(
+    resp = requests.post(
         url,
         json={"model": model, "prompt": prompt, "stream": False},
         timeout=120,
     )
-    response.raise_for_status()
-    return response.json()["response"].strip()
+    resp.raise_for_status()
+    data: dict = resp.json()
+    return str(data.get("response", "")).strip()
 
 
 def correct_transcript(
