@@ -12,6 +12,9 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
+pandas = ">=2.0"
+google-genai = ">=1.0"
+requests = ">=2.31"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
