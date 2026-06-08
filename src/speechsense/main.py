@@ -1,17 +1,19 @@
-def foo(bar: str) -> str:
-    """Summary line.
+import sys
+from pathlib import Path
 
-    Extended description of function.
-
-    Args:
-        bar: Description of input argument.
-
-    Returns:
-        Description of return value
-    """
-
-    return bar
+from speechsense.analyse import main as run_analysis
 
 
-if __name__ == "__main__":  # pragma: no cover
-    pass
+def main() -> None:
+    if len(sys.argv) != 2:
+        print("Usage: speechsense <csv_path>")
+        sys.exit(1)
+    csv_path = sys.argv[1]
+    if not Path(csv_path).exists():
+        print(f"Error: file not found: {csv_path}")
+        sys.exit(1)
+    run_analysis(csv_path)
+
+
+if __name__ == "__main__":
+    main()
