@@ -10,7 +10,7 @@ class TestCorrectWithGemini:
     def test_success(self) -> None:
         mock_response = type("Response", (), {"text": "  Hello team, today we discuss.  "})()
 
-        with patch("speechsense.correction.genai.Client") as mock_client:
+        with patch("google.genai.Client") as mock_client:
             instance = mock_client.return_value
             instance.models.generate_content.return_value = mock_response
 
