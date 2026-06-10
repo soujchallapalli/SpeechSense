@@ -35,8 +35,8 @@ def load_csv(path: str) -> tuple[list[str], list[dict[str, str]]]:
         if missing:
             msg = f"CSV is missing required columns: {missing}"
             raise ValueError(msg)
-        rows = list(reader)
-    return reader.fieldnames, rows
+        rows: list[dict[str, str]] = list(reader)
+    return list(reader.fieldnames), rows
 
 
 def correct_row(
