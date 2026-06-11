@@ -29,7 +29,7 @@ This runs `poetry install` and sets up pre-commit hooks for automatic linting/fo
 
 ### Correct transcripts with AI (Stage 2)
 
-Read a CSV with `raw_text_vosk`, send each transcript to AI for correction, and write an enriched CSV with a `text` column.
+Read a CSV with `raw_text_vosk`, correct each transcript via AI in parallel, and write an enriched CSV with a `text` column.
 
 **With Gemini (default):**
 
@@ -59,6 +59,25 @@ correct-transcripts --input raw.csv --output corrected.csv --provider ollama
 | `correct-transcripts` | Correct raw Vosk transcripts with AI |
 
 All commands accept `--help` for full usage.
+
+### CLI reference
+
+```
+correct-transcripts --input INPUT --output OUTPUT [options]
+```
+
+| Option             | Default                               | Description                                  |
+| ------------------ | ------------------------------------- | -------------------------------------------- |
+| `--input`          | _(required)_                          | Path to input CSV                            |
+| `--output`         | _(required)_                          | Path to output CSV                           |
+| `--provider`       | `gemini`                              | AI provider (`gemini` or `ollama`)           |
+| `--workers`        | `4`                                   | Number of parallel threads for AI correction |
+| `--gemini-api-key` | `GEMINI_API_KEY` env var              | Gemini API key                               |
+| `--gemini-model`   | `gemini-2.5-flash`                    | Gemini model name                            |
+| `--ollama-model`   | `gemma3`                              | Ollama model name                            |
+| `--ollama-url`     | `http://localhost:11434/api/generate` | Ollama server URL                            |
+
+Rows are read one-by-one with `csv.DictReader` and corrected in parallel using a thread pool (I/O-bound API calls). Results are written in input order. Use `--workers` to tune concurrency — Gemini may throttle bursts and Ollama may not scale linearly with more threads.
 
 ## Development
 

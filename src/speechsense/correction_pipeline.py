@@ -25,18 +25,17 @@ def load_csv(path: str) -> tuple[list[str], list[dict[str, str]]]:
         A tuple of (fieldnames, rows) where fieldnames are the CSV header columns
         and rows is a list of dicts (one per data row).
     """
-    HEADER_MSG = "CSV is empty or has no header row"
-
     with open(path, newline="") as f:
         reader = csv.DictReader(f)
         if reader.fieldnames is None:
-            raise ValueError(HEADER_MSG)
+            msg = "CSV is empty or has no header row"
+            raise ValueError(msg)
         missing = [c for c in REQUIRED_COLUMNS if c not in reader.fieldnames]
         if missing:
             msg = f"CSV is missing required columns: {missing}"
             raise ValueError(msg)
         rows: list[dict[str, str]] = list(reader)
-    return list(reader.fieldnames), rows
+        return list(reader.fieldnames), rows
 
 
 def correct_row(
@@ -72,7 +71,7 @@ def save_csv(fieldnames: list[str], rows: list[dict], path: str) -> None:
     """Write enriched CSV with an additional ``text`` column."""
     output_fieldnames = [*fieldnames, "text"]
     with open(path, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=output_fieldnames)
+        writer = csv.DictWriter(f, fieldnames=output_fieldnames, extrasaction="raise")
         writer.writeheader()
         writer.writerows(rows)
     logger.info("Saved enriched CSV to %s (%d rows)", path, len(rows))

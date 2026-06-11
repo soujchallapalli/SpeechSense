@@ -15,3 +15,20 @@ A speech processing pipeline for recording, transcribing, correcting, enriching,
 | Command               | Description                          |
 | --------------------- | ------------------------------------ |
 | `correct-transcripts` | Correct raw Vosk transcripts with AI |
+
+### CLI reference
+
+```
+correct-transcripts --input INPUT --output OUTPUT [options]
+```
+
+| Option             | Default                               | Description                                  |
+| ------------------ | ------------------------------------- | -------------------------------------------- |
+| `--input`          | _(required)_                          | Path to input CSV                            |
+| `--output`         | _(required)_                          | Path to output CSV                           |
+| `--provider`       | `gemini`                              | AI provider (`gemini` or `ollama`)           |
+| `--workers`        | `4`                                   | Number of parallel threads for AI correction |
+| `--gemini-api-key` | `GEMINI_API_KEY` env var              | Gemini API key                               |
+| `--gemini-model`   | `gemini-2.5-flash`                    | Gemini model name                            |
+| `--ollama-model`   | `gemma3`                              | Ollama model name                            |
+| `--ollama-url`     | `http://localhost:11434/api/generate` | Ollama server URL                            |
