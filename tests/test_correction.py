@@ -156,6 +156,29 @@ class TestCorrectionPipeline:
         content = out.read_text()
         assert "Hello team." in content
 
+    def test_process_pipeline_parallel(self, tmp_path: pytest.TempPathFactory) -> None:
+        inp = tmp_path / "in.csv"
+        inp.write_text(
+            "timestamp,name,raw_text_vosk,time_taken_sec\n"
+            "t1,A,first transcript,1.0\n"
+            "t2,B,second transcript,2.0\n"
+            "t3,C,third transcript,3.0\n"
+        )
+        out = tmp_path / "out.csv"
+
+        side_effects = iter(["First.", "Second.", "Third."])
+
+        with patch("speechsense.correction_pipeline.correct_transcript") as mock_fn:
+            mock_fn.side_effect = lambda *a, **kw: next(side_effects)
+            process_pipeline(str(inp), str(out), provider="gemini", max_workers=3)
+
+        lines = out.read_text().strip().splitlines()
+        assert len(lines) == 4
+        assert "First." in lines[1]
+        assert "Second." in lines[2]
+        assert "Third." in lines[3]
+        assert mock_fn.call_count == 3
+
     def test_arg_parser_defaults(self) -> None:
         parser = build_arg_parser()
         args = parser.parse_args(["--input", "in.csv", "--output", "out.csv"])
