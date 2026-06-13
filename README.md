@@ -6,7 +6,7 @@ A speech processing pipeline for recording, transcribing, correcting, enriching,
 
 - Python 3.10+
 - [Poetry](https://python-poetry.org/docs/#installation)
-- [Ollama](https://ollama.com/download) running locally with `gemma3` pulled
+- [Ollama](https://ollama.com/download) running locally with `gemma3` pulled (see [Setting up Ollama](#setting-up-ollama))
 
 ## Setup
 
@@ -24,16 +24,41 @@ make install
 
 This runs `poetry install` and sets up pre-commit hooks for automatic linting/formatting on commit.
 
+## Setting up Ollama
+
+Ollama runs a local AI server on your machine. The project uses it for transcript correction.
+
+1. **Install** — download from [ollama.com/download](https://ollama.com/download) and open the app.
+
+2. **Download the model**:
+
+   ```bash
+   ollama pull gemma3
+   ```
+
+   If your computer is slow or has limited memory, use the smaller model instead:
+
+   ```bash
+   ollama pull gemma3:1b
+   ```
+
+   Then set `--ollama-model gemma3:1b` when running commands below.
+
+3. **Verify the server is running**:
+   ```bash
+   curl http://localhost:11434/api/generate \
+     -d '{"model": "gemma3", "prompt": "Correct this: helo team", "stream": false}'
+   ```
+   A JSON response means it is working. If you see a connection error, open the Ollama app and try again.
+
 ## Usage
 
 ### Correct transcripts with AI (Stage 2)
 
 Read a CSV with `raw_text_vosk`, correct each transcript via AI in parallel, and write an enriched CSV with a `text` column.
 
-**With Ollama (local):**
-
 ```bash
-correct-transcripts --input raw.csv --output corrected.csv --provider ollama
+correct-transcripts --input raw.csv --output corrected.csv
 ```
 
 **Input CSV format:**
