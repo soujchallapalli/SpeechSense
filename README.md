@@ -6,8 +6,7 @@ A speech processing pipeline for recording, transcribing, correcting, enriching,
 
 - Python 3.10+
 - [Poetry](https://python-poetry.org/docs/#installation)
-- For Gemini: a [Gemini API key](https://aistudio.google.com/apikey)
-- For Ollama: [Ollama](https://ollama.com/download) running locally with `gemma3` pulled
+- [Ollama](https://ollama.com/download) running locally with `gemma3` pulled
 
 ## Setup
 
@@ -30,13 +29,6 @@ This runs `poetry install` and sets up pre-commit hooks for automatic linting/fo
 ### Correct transcripts with AI (Stage 2)
 
 Read a CSV with `raw_text_vosk`, correct each transcript via AI in parallel, and write an enriched CSV with a `text` column.
-
-**With Gemini (default):**
-
-```bash
-export GEMINI_API_KEY="your_key_here"
-correct-transcripts --input raw.csv --output corrected.csv
-```
 
 **With Ollama (local):**
 
@@ -66,18 +58,16 @@ All commands accept `--help` for full usage.
 correct-transcripts --input INPUT --output OUTPUT [options]
 ```
 
-| Option             | Default                               | Description                                  |
-| ------------------ | ------------------------------------- | -------------------------------------------- |
-| `--input`          | _(required)_                          | Path to input CSV                            |
-| `--output`         | _(required)_                          | Path to output CSV                           |
-| `--provider`       | `gemini`                              | AI provider (`gemini` or `ollama`)           |
-| `--workers`        | `4`                                   | Number of parallel threads for AI correction |
-| `--gemini-api-key` | `GEMINI_API_KEY` env var              | Gemini API key                               |
-| `--gemini-model`   | `gemini-2.5-flash`                    | Gemini model name                            |
-| `--ollama-model`   | `gemma3`                              | Ollama model name                            |
-| `--ollama-url`     | `http://localhost:11434/api/generate` | Ollama server URL                            |
+| Option           | Default                               | Description                                  |
+| ---------------- | ------------------------------------- | -------------------------------------------- |
+| `--input`        | _(required)_                          | Path to input CSV                            |
+| `--output`       | _(required)_                          | Path to output CSV                           |
+| `--provider`     | `ollama`                              | AI provider (`ollama`)                       |
+| `--workers`      | `4`                                   | Number of parallel threads for AI correction |
+| `--ollama-model` | `gemma3`                              | Ollama model name                            |
+| `--ollama-url`   | `http://localhost:11434/api/generate` | Ollama server URL                            |
 
-Rows are read one-by-one with `csv.DictReader` and corrected in parallel using a thread pool (I/O-bound API calls). Results are written in input order. Use `--workers` to tune concurrency — Gemini may throttle bursts and Ollama may not scale linearly with more threads.
+Rows are read one-by-one with `csv.DictReader` and corrected in parallel using a thread pool (I/O-bound API calls). Results are written in input order. Use `--workers` to tune concurrency — Ollama may not scale linearly with more threads.
 
 ## Development
 
@@ -150,7 +140,7 @@ SpeechSense/
 │   └── speechsense/
 │       ├── __init__.py
 │       ├── main.py
-│       ├── correction.py              # AI correction providers (Gemini, Ollama)
+│       ├── correction.py              # AI correction via Ollama
 │       └── correction_pipeline.py     # CSV load → correct → save pipeline
 ├── tests/
 │   ├── test_foo.py

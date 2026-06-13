@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
 import pytest
-from speechsense.correction import correct_transcript, correct_with_gemini, correct_with_ollama
+from speechsense.correction import correct_transcript, correct_with_ollama
 from speechsense.correction_pipeline import (
     build_arg_parser,
     correct_row,
@@ -9,23 +9,6 @@ from speechsense.correction_pipeline import (
     process_pipeline,
     save_csv,
 )
-
-
-class TestCorrectWithGemini:
-    def test_success(self) -> None:
-        mock_response = type("Response", (), {"text": "  Hello team, today we discuss.  "})()
-
-        with patch("google.genai.Client") as mock_client:
-            instance = mock_client.return_value
-            instance.models.generate_content.return_value = mock_response
-
-            result = correct_with_gemini("helo team today we discuss", api_key="fake-key")
-
-        assert result == "Hello team, today we discuss."
-
-    def test_missing_api_key(self) -> None:
-        with patch.dict("os.environ", {}, clear=True), pytest.raises(ValueError, match="GEMINI_API_KEY is not set"):
-            correct_with_gemini("hello", api_key=None)
 
 
 class TestCorrectWithOllama:
@@ -49,12 +32,6 @@ class TestCorrectWithOllama:
 
 
 class TestCorrectTranscript:
-    def test_gemini_provider(self) -> None:
-        with patch("speechsense.correction.correct_with_gemini") as mock_fn:
-            mock_fn.return_value = "Corrected."
-            result = correct_transcript("raw", provider="gemini")
-        assert result == "Corrected."
-
     def test_ollama_provider(self) -> None:
         with patch("speechsense.correction.correct_with_ollama") as mock_fn:
             mock_fn.return_value = "Corrected."
@@ -99,7 +76,7 @@ class TestCorrectionPipeline:
         }
         with patch("speechsense.correction_pipeline.correct_transcript") as mock_fn:
             mock_fn.return_value = "Hello team."
-            result = correct_row(row, provider="gemini")
+            result = correct_row(row, provider="ollama")
         assert result["text"] == "Hello team."
         assert result["name"] == "Stelios"
 
@@ -112,7 +89,7 @@ class TestCorrectionPipeline:
         }
         with patch("speechsense.correction_pipeline.correct_transcript") as mock_fn:
             mock_fn.side_effect = Exception("API error")
-            result = correct_row(row, provider="gemini")
+            result = correct_row(row, provider="ollama")
         assert result["text"] == ""
 
     def test_correct_row_returns_copy(self) -> None:
@@ -124,7 +101,7 @@ class TestCorrectionPipeline:
         }
         with patch("speechsense.correction_pipeline.correct_transcript") as mock_fn:
             mock_fn.return_value = "Hello team."
-            result = correct_row(row, provider="gemini")
+            result = correct_row(row, provider="ollama")
         assert result is not row
         assert "text" not in row
 
@@ -151,7 +128,7 @@ class TestCorrectionPipeline:
         out = tmp_path / "out.csv"
         with patch("speechsense.correction_pipeline.correct_transcript") as mock_fn:
             mock_fn.return_value = "Hello team."
-            process_pipeline(str(inp), str(out), provider="gemini", max_workers=1)
+            process_pipeline(str(inp), str(out), provider="ollama", max_workers=1)
         assert out.exists()
         content = out.read_text()
         assert "Hello team." in content
@@ -170,7 +147,7 @@ class TestCorrectionPipeline:
 
         with patch("speechsense.correction_pipeline.correct_transcript") as mock_fn:
             mock_fn.side_effect = lambda *a, **kw: next(side_effects)
-            process_pipeline(str(inp), str(out), provider="gemini", max_workers=3)
+            process_pipeline(str(inp), str(out), provider="ollama", max_workers=3)
 
         lines = out.read_text().strip().splitlines()
         assert len(lines) == 4
@@ -184,9 +161,8 @@ class TestCorrectionPipeline:
         args = parser.parse_args(["--input", "in.csv", "--output", "out.csv"])
         assert args.input == "in.csv"
         assert args.output == "out.csv"
-        assert args.provider == "gemini"
+        assert args.provider == "ollama"
         assert args.workers == 4
-        assert args.gemini_api_key is None
         assert args.ollama_model == "gemma3"
 
     def test_arg_parser_ollama_provider(self) -> None:
@@ -198,21 +174,6 @@ class TestCorrectionPipeline:
         parser = build_arg_parser()
         args = parser.parse_args(["--input", "in.csv", "--output", "out.csv", "--workers", "8"])
         assert args.workers == 8
-
-    def test_arg_parser_gemini_flags(self) -> None:
-        parser = build_arg_parser()
-        args = parser.parse_args([
-            "--input",
-            "in.csv",
-            "--output",
-            "out.csv",
-            "--gemini-api-key",
-            "mykey",
-            "--gemini-model",
-            "gemini-2.0-pro",
-        ])
-        assert args.gemini_api_key == "mykey"
-        assert args.gemini_model == "gemini-2.0-pro"
 
     def test_arg_parser_ollama_flags(self) -> None:
         parser = build_arg_parser()
@@ -229,7 +190,7 @@ class TestCorrectionPipeline:
         assert args.ollama_model == "llama3"
         assert args.ollama_url == "http://localhost:11435"
 
-    def test_arg_parser_invalid_provider(self) -> None:
+    def test_arg_parser_ollama_only_provider(self) -> None:
         parser = build_arg_parser()
-        with pytest.raises(SystemExit):
-            parser.parse_args(["--input", "in.csv", "--output", "out.csv", "--provider", "invalid"])
+        args = parser.parse_args(["--input", "in.csv", "--output", "out.csv"])
+        assert args.provider == "ollama"

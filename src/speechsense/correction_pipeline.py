@@ -7,7 +7,6 @@ from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 
 from speechsense.correction import (
-    GEMINI_MODEL,
     OLLAMA_MODEL,
     OLLAMA_URL,
     correct_transcript,
@@ -40,9 +39,7 @@ def load_csv(path: str) -> tuple[list[str], list[dict[str, str]]]:
 
 def correct_row(
     row: dict[str, str],
-    provider: str = "gemini",
-    gemini_api_key: str | None = None,
-    gemini_model: str = GEMINI_MODEL,
+    provider: str = "ollama",
     ollama_model: str = OLLAMA_MODEL,
     ollama_url: str = OLLAMA_URL,
 ) -> dict[str, str]:
@@ -56,8 +53,6 @@ def correct_row(
         row["text"] = correct_transcript(
             row["raw_text_vosk"],
             provider=provider,
-            gemini_api_key=gemini_api_key,
-            gemini_model=gemini_model,
             ollama_model=ollama_model,
             ollama_url=ollama_url,
         )
@@ -80,10 +75,8 @@ def save_csv(fieldnames: list[str], rows: list[dict], path: str) -> None:
 def process_pipeline(
     input_path: str,
     output_path: str,
-    provider: str = "gemini",
+    provider: str = "ollama",
     max_workers: int = 4,
-    gemini_api_key: str | None = None,
-    gemini_model: str = GEMINI_MODEL,
     ollama_model: str = OLLAMA_MODEL,
     ollama_url: str = OLLAMA_URL,
 ) -> None:
@@ -94,8 +87,6 @@ def process_pipeline(
     correct_fn = partial(
         correct_row,
         provider=provider,
-        gemini_api_key=gemini_api_key,
-        gemini_model=gemini_model,
         ollama_model=ollama_model,
         ollama_url=ollama_url,
     )
@@ -115,27 +106,16 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output", required=True, help="Path to output CSV")
     parser.add_argument(
         "--provider",
-        default="gemini",
-        choices=["gemini", "ollama"],
-        help="AI provider (default: gemini)",
+        default="ollama",
+        choices=["ollama"],
+        help="AI provider (default: ollama)",
     )
     parser.add_argument(
         "--workers",
         type=int,
         default=4,
         help="Number of parallel threads for AI correction (default: 4). "
-        "Operational tuning knob -- Gemini may throttle bursts "
-        "and Ollama may not scale linearly with more threads.",
-    )
-    parser.add_argument(
-        "--gemini-api-key",
-        default=None,
-        help="Gemini API key (default: GEMINI_API_KEY env var)",
-    )
-    parser.add_argument(
-        "--gemini-model",
-        default=GEMINI_MODEL,
-        help=f"Gemini model name (default: {GEMINI_MODEL})",
+        "Ollama may not scale linearly with more threads.",
     )
     parser.add_argument(
         "--ollama-model",
@@ -162,8 +142,6 @@ def main() -> None:
         output_path=args.output,
         provider=args.provider,
         max_workers=args.workers,
-        gemini_api_key=args.gemini_api_key,
-        gemini_model=args.gemini_model,
         ollama_model=args.ollama_model,
         ollama_url=args.ollama_url,
     )

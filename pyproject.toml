@@ -12,7 +12,6 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
-google-genai = ">=1.0"
 requests = ">=2.31"
 
 [tool.poetry.scripts]
