@@ -1,8 +1,6 @@
 import logging
 import threading
 
-from dotenv import load_dotenv
-
 from speechsense.data.processed_db import ProcessedRepository
 from speechsense.data.transcript_db import TranscriptRepository
 
@@ -13,9 +11,6 @@ def initialize() -> dict:
     This function sets up logging, loads environment variables, and performs any other necessary
     configuration steps required before the application starts.
     """
-
-    # load environment variables from a .env file
-    load_dotenv()
 
     # Configure logging to show INFO level and above
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")

@@ -13,11 +13,10 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
 requests = ">=2.31"
+pymongo = {version = "^4.17.0", extras = ["srv"]}
 
 [tool.poetry.scripts]
 correct-transcripts = "speechsense.correction_pipeline:main"
-pymongo = "^4.17.0"
-python-dotenv = "^1.2.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"

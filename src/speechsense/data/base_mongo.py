@@ -1,6 +1,6 @@
 import os
 
-from pymongo import MongoClient
+import pymongo
 from pymongo.collection import Collection
 from pymongo.server_api import ServerApi
 
@@ -12,7 +12,7 @@ class BaseMongoRepository:
     ) -> None:
         """Initializes the connection and binds this specific instance to a collection."""
         uri = os.getenv("MONGODB_URI")
-        self.client: MongoClient = MongoClient(uri, server_api=ServerApi("1"))
+        self.client: pymongo.MongoClient = pymongo.MongoClient(uri, server_api=ServerApi("1"))
         self.db = self.client["SpeechSenseDB"]
         self.collection: Collection = self.db[collection_name]
 
