@@ -7,7 +7,7 @@ from speechsense.data.processed_db import ProcessedRepository
 from speechsense.data.transcript_db import TranscriptRepository
 
 
-def initialize():
+def initialize() -> dict:
     """
     Initializes the configuration for the SpeechSense application.
     This function sets up logging, loads environment variables, and performs any other necessary
