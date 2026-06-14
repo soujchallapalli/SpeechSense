@@ -16,6 +16,8 @@ requests = ">=2.31"
 
 [tool.poetry.scripts]
 correct-transcripts = "speechsense.correction_pipeline:main"
+pymongo = "^4.17.0"
+python-dotenv = "^1.2.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"

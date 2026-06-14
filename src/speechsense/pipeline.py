@@ -1,16 +1,11 @@
-import logging
-import threading
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from time import sleep
 
-# Configure logging to show INFO level and above
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-
 
 # Initializes the CSV (or recording) and returns the output CSV path
-def record_to_file() -> str:
-    logging.info("csv is initialized")
+def record_to_file(context: dict) -> str:
+    context["logging"].info("csv is initialized")
     return str(Path(__file__).resolve().parents[2] / "tests" / "mock_data.csv")
 
 
@@ -18,7 +13,7 @@ def record_to_file() -> str:
 def sanitize_with_ai(context: dict, row: str) -> str:
     sleep(3)
     row = row.rstrip("\n") + ",sanitized"
-    logging.info("AI processing done")
+    context["logging"].info("AI processing done")
     return row
 
 
@@ -26,7 +21,7 @@ def sanitize_with_ai(context: dict, row: str) -> str:
 def add_speaker_counter(context: dict, row: str) -> str:
     sleep(3)
     row = row.rstrip("\n") + ",speaker_counter"
-    logging.info("speaker counter added")
+    context["logging"].info("speaker counter added")
     return row
 
 
@@ -35,7 +30,7 @@ def analyze(context: dict, rows: list) -> list:
     sleep(3)
     for row in rows:
         row = row.rstrip("\n") + ",analyzed"
-    logging.info("data is analyzed with python")
+    context["logging"].info("data is analyzed with python")
     return rows
 
 
@@ -43,7 +38,7 @@ def analyze(context: dict, rows: list) -> list:
 def validate(context: dict, row: str) -> str:
     sleep(3)
     row = row.rstrip("\n") + ",validated"
-    logging.info("CSV is validated")
+    context["logging"].info("CSV is validated")
     return row
 
 
@@ -51,7 +46,7 @@ def write_to_new_csv(context: dict, row: str) -> None:
     mutex = context["mutex"]
     sleep(3)
     mutex.acquire()
-    logging.info(f"row is written to csv:{row}")
+    context["logging"].info(f"row is written to csv:{row}")
     mutex.release()
     return
 
@@ -64,9 +59,8 @@ def process_single_row(context: dict, row: str) -> None:
     return
 
 
-def process() -> None:
-    csv_path = record_to_file()
-    context = {"mutex": threading.Lock()}
+def process(context: dict) -> None:
+    csv_path = record_to_file(context)
     with open(csv_path) as rows, ThreadPoolExecutor(max_workers=15) as executor:
         list(executor.map(lambda row: process_single_row(context, row), rows))
         analyze(context, rows.readlines())
