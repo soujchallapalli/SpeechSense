@@ -1,9 +1,12 @@
+import mongomock
 import pytest
 from speechsense.data.base_mongo import BaseMongoRepository
 
 
 @pytest.fixture(autouse=True)
-def testing_db():
+def testing_db(monkeypatch):
+    monkeypatch.setattr("pymongo.MongoClient", mongomock.MongoClient)
+
     # Setup: Create a new instance of BaseMongoRepository for testing
     DB = BaseMongoRepository("testingDB")
 

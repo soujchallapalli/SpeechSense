@@ -46,9 +46,7 @@ class TestCorrectTranscript:
 class TestCorrectionPipeline:
     def test_load_csv_valid(self, tmp_path: pytest.TempPathFactory) -> None:
         csv_path = tmp_path / "input.csv"
-        csv_path.write_text(
-            "timestamp,name,raw_text_vosk,time_taken_sec\n" "2026-04-28T10:00:05,Stelios,helo team,6.2\n"
-        )
+        csv_path.write_text("timestamp,name,raw_text_vosk,time_taken_sec\n2026-04-28T10:00:05,Stelios,helo team,6.2\n")
         fieldnames, rows = load_csv(str(csv_path))
         assert fieldnames == ["timestamp", "name", "raw_text_vosk", "time_taken_sec"]
         assert len(rows) == 1
@@ -124,7 +122,7 @@ class TestCorrectionPipeline:
 
     def test_process_pipeline(self, tmp_path: pytest.TempPathFactory) -> None:
         inp = tmp_path / "in.csv"
-        inp.write_text("timestamp,name,raw_text_vosk,time_taken_sec\n" "2026-04-28T10:00:05,Stelios,helo team,6.2\n")
+        inp.write_text("timestamp,name,raw_text_vosk,time_taken_sec\n2026-04-28T10:00:05,Stelios,helo team,6.2\n")
         out = tmp_path / "out.csv"
         with patch("speechsense.correction_pipeline.correct_transcript") as mock_fn:
             mock_fn.return_value = "Hello team."
