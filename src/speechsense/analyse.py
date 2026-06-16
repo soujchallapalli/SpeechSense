@@ -32,6 +32,8 @@ def avg_speaking_time_per_speaker(df: pd.DataFrame) -> float:
 
 def most_questions(df: pd.DataFrame) -> tuple[str, int]:
     questions = df[df["question_flag"]].groupby("name").size()
+    if questions.empty:
+        return ("", 0)
     speaker = questions.idxmax()
     return speaker, int(questions[speaker])
 
