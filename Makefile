@@ -13,7 +13,7 @@ check: ## Run code quality tools.
 	@echo "🚀 Static type checking: Running mypy"
 	@poetry run mypy
 	@echo "🚀 Checking for obsolete dependencies: Running deptry"
-	@poetry run deptry src
+	@poetry run deptry src --exclude "venv|\.venv"
 
 .PHONY: test
 test: ## Test the code with pytest

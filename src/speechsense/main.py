@@ -2,6 +2,8 @@ import sys
 from pathlib import Path
 
 from speechsense.analyse import main as run_analysis
+from speechsense.initial_config import initialize
+from speechsense.pipeline import process
 
 
 def main() -> None:
@@ -15,5 +17,6 @@ def main() -> None:
     run_analysis(csv_path)
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__":  # pragma: no cover
+    context = initialize()
+    process(context)
