@@ -9,6 +9,7 @@ copyright: Maintained by <a href="https://fpgmaas.com">Florian</a>.
 
 nav:
   - Home: index.md
+  - Report: report.md
   - Modules: modules.md
 plugins:
   - search

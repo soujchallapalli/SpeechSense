@@ -2,7 +2,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from time import sleep
 
-from speechsense.analyse import load_data, print_report
+from speechsense.analyse import load_data, print_report, write_report
 
 
 # Initializes the CSV (or recording) and returns the output CSV path
@@ -57,4 +57,6 @@ def process(context: dict) -> None:
     with open(csv_path) as rows, ThreadPoolExecutor(max_workers=15) as executor:
         list(executor.map(lambda row: process_single_row(context, row), rows))
     df = load_data(csv_path)
+    report_path = str(Path(__file__).resolve().parents[2] / "docs" / "report.md")
+    write_report(df, report_path)
     print_report(df)
