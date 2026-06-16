@@ -1,3 +1,4 @@
+from speechsense.initial_config import initialize
 from speechsense.pipeline import process
 
 
@@ -17,4 +18,5 @@ def foo(bar: str) -> str:
 
 
 if __name__ == "__main__":  # pragma: no cover
-    process()
+    context = initialize()
+    process(context)

@@ -13,6 +13,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
 requests = ">=2.31"
+pymongo = {version = "^4.17.0", extras = ["srv"]}
 
 [tool.poetry.scripts]
 correct-transcripts = "speechsense.correction_pipeline:main"
@@ -25,6 +26,7 @@ mypy = "^1.5.1"
 pandas-stubs = ">=2.0"
 pre-commit = "^3.4.0"
 tox = "^4.11.1"
+mongomock = "^4.3.0"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.4.2"
