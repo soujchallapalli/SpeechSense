@@ -1,3 +1,9 @@
+## Analyse
+
+::: speechsense.analyse
+
+---
+
 ## Correction
 
 ::: speechsense.correction

@@ -12,9 +12,10 @@ A speech processing pipeline for recording, transcribing, correcting, enriching,
 
 ## CLI commands
 
-| Command               | Description                          |
-| --------------------- | ------------------------------------ |
-| `correct-transcripts` | Correct raw Vosk transcripts with AI |
+| Command                               | Description                               |
+| ------------------------------------- | ----------------------------------------- |
+| `correct-transcripts`                 | Correct raw Vosk transcripts with AI      |
+| `python -m speechsense.analyse <csv>` | Run speaking analytics on an enriched CSV |
 
 ### CLI reference
 
