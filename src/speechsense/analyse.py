@@ -10,42 +10,42 @@ def load_data(csv_path: str) -> pd.DataFrame:
 
 def most_words(df: pd.DataFrame) -> tuple[str, int]:
     totals = df.groupby("name")["num_words"].sum()
-    speaker = totals.idxmax()
+    speaker = str(totals.idxmax())
     return speaker, int(totals[speaker])
 
 
 def least_words(df: pd.DataFrame) -> tuple[str, int]:
     totals = df.groupby("name")["num_words"].sum()
-    speaker = totals.idxmin()
+    speaker = str(totals.idxmin())
     return speaker, int(totals[speaker])
 
 
 def total_speaking_time(df: pd.DataFrame) -> float:
-    return round(df["time_taken_sec"].sum(), 1)
+    return float(round(df["time_taken_sec"].sum(), 1))
 
 
 def avg_speaking_time_per_speaker(df: pd.DataFrame) -> float:
     total = df["time_taken_sec"].sum()
     num_speakers = df["name"].nunique()
-    return round(total / num_speakers, 1)
+    return float(round(total / num_speakers, 1))
 
 
 def most_questions(df: pd.DataFrame) -> tuple[str, int]:
     questions = df[df["question_flag"]].groupby("name").size()
     if questions.empty:
         return ("", 0)
-    speaker = questions.idxmax()
+    speaker = str(questions.idxmax())
     return speaker, int(questions[speaker])
 
 
 def top_speakers_by_time(df: pd.DataFrame, n: int = 5) -> list[tuple[str, float]]:
     totals = df.groupby("name")["time_taken_sec"].sum().sort_values(ascending=False)
-    return [(name, round(time, 1)) for name, time in totals.head(n).items()]
+    return [(str(name), float(round(time, 1))) for name, time in totals.head(n).items()]
 
 
 def avg_speech_rate_per_speaker(df: pd.DataFrame) -> list[tuple[str, float]]:
     rates = df.groupby("name")["speech_rate_wps"].mean()
-    return [(name, round(rate, 2)) for name, rate in rates.items()]
+    return [(str(name), float(round(rate, 2))) for name, rate in rates.items()]
 
 
 def print_report(df: pd.DataFrame) -> None:
