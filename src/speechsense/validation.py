@@ -13,7 +13,7 @@ def clean_string(context: dict, value: str, default: str = "N/A") -> str:
     return cleaned
 
 
-def clean_numeric(context: dict, value: Any, default: float = 0.0) -> float:
+def clean_numeric(context: dict, value: int | float, default: float = 0.0) -> float:
     if value is None or str(value).strip() == "":
         return default
     try:
@@ -62,7 +62,7 @@ def reformat_timestamp(context: dict, value: Any, default: str = "2026-01-01T00:
 def validate_row(context: dict, row: dict) -> dict:
     print(f"\n--- Processing Pipeline Step for Row ID: {row['_id']} ---")
 
-    new_row = {}
+    new_row: dict[str, Any] = {}
     for key, value in row.items():
         if key == "timestamp":
             new_row[key] = reformat_timestamp(context, value)
