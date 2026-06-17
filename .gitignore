@@ -173,3 +173,10 @@ cython_debug/
 .AppleDouble
 .LSOverride
 data
+
+
+# Vosk model (large, downloaded)
+vosk-model-en-us-0.42-gigaspeech/
+
+# Generated transcription output
+output/
