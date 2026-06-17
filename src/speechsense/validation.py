@@ -2,25 +2,28 @@ import datetime
 from typing import Any
 
 
-def clean_string(value: Any, default: str = "N/A") -> str:
+def clean_string(context: dict, value: str, default: str = "N/A") -> str:
     if value is None:
         return default
 
     cleaned = str(value).strip()
-    return cleaned if cleaned != "" else default
+    if cleaned == "":
+        context["logging"].warning(f"[PIPELINE WARNING]: Empty string found. Defaulting to '{default}'")
+        return default
+    return cleaned
 
 
-def clean_numeric(value: Any, default: float = 0.0) -> float:
+def clean_numeric(context: dict, value: Any, default: float = 0.0) -> float:
     if value is None or str(value).strip() == "":
         return default
     try:
         return float(value)
     except (ValueError, TypeError):
-        print(f"[PIPELINE WARNING]: Cannot convert '{value}' to float. Defaulting to {default}")
+        context["logging"].warning(f"[PIPELINE WARNING]: Cannot convert '{value}' to float. Defaulting to {default}")
         return default
 
 
-def reformat_timestamp(value: Any, default: str = "2026-01-01T00:00:00") -> str:
+def reformat_timestamp(context: dict, value: Any, default: str = "2026-01-01T00:00:00") -> str:
     if value is None or str(value).strip() == "":
         return default
 
@@ -52,21 +55,21 @@ def reformat_timestamp(value: Any, default: str = "2026-01-01T00:00:00") -> str:
             continue
 
     # If it loops through all formats and can't read it
-    print(f"[PIPELINE ERROR]: Unrecognized timestamp format '{value}'. Defaulting to {default}")
+    context["logging"].error(f"[PIPELINE ERROR]: Unrecognized timestamp format '{value}'. Defaulting to {default}")
     return default
 
 
-def validate_row(row: dict) -> dict:
+def validate_row(context: dict, row: dict) -> dict:
     print(f"\n--- Processing Pipeline Step for Row ID: {row['_id']} ---")
 
     new_row = {}
     for key, value in row.items():
         if key == "timestamp":
-            new_row[key] = reformat_timestamp(value)
-        if isinstance(value, str):
-            new_row[key] = clean_string(value)
+            new_row[key] = reformat_timestamp(context, value)
+        elif isinstance(value, str):
+            new_row[key] = clean_string(context, value)
         elif isinstance(value, int | float):
-            new_row[key] = clean_numeric(value)
+            new_row[key] = clean_numeric(context, value)
         else:
             new_row[key] = value  # Keep as is for other types
     return new_row

@@ -44,7 +44,7 @@ def write_to_new_csv(context: dict, row: dict) -> None:
 # all the parllel processing
 def process_single_row(context: dict, row: dict) -> None:
     sanitized_row = sanitize_with_ai(context, row)
-    processed_row = validate_row(sanitized_row)
+    processed_row = validate_row(context, sanitized_row)
     write_to_new_csv(context, processed_row)
     return
 

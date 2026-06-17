@@ -12,7 +12,6 @@ class BaseMongoRepository:
     ) -> None:
         """Initializes the connection and binds this specific instance to a collection."""
         uri = os.getenv("MONGODB_URI")
-        print(f"Connecting to MongoDB at {uri}...")
         self.client: pymongo.MongoClient = pymongo.MongoClient(uri, server_api=ServerApi("1"))
         self.db = self.client["SpeechSenseDB"]
         self.collection: Collection = self.db[collection_name]
