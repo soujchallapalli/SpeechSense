@@ -94,6 +94,14 @@ correct-transcripts --input INPUT --output OUTPUT [options]
 
 Rows are read one-by-one with `csv.DictReader` and corrected in parallel using a thread pool (I/O-bound API calls). Results are written in input order. Use `--workers` to tune concurrency — Ollama may not scale linearly with more threads.
 
+## connecting to MongoDB
+
+- create your .env file at the root
+  - `cd SpeechSense/`
+  - `touch .env`
+- inside the file add the connection string
+  - `MONGODB_URI= "mongodb+srv://SpeechSenseAdmin:<PASSWORD>@speechsense.kkxnwfq.mongodb.net/?appName=SpeechSense"`
+
 ## Development
 
 ### Running Tests
@@ -166,10 +174,16 @@ SpeechSense/
 │       ├── __init__.py
 │       ├── main.py
 │       ├── correction.py              # AI correction via Ollama
-│       └── correction_pipeline.py     # CSV load → correct → save pipeline
+│       ├── correction_pipeline.py     # CSV load → correct → save pipeline
+│       └── data/
+│           ├── base_mongo.py
+│           ├── processed_db.py
+│           └── transcript_db.py
 ├── tests/
 │   ├── test_foo.py
 │   └── test_correction.py             # Tests for correction module + pipeline
+│   └── data/
+│       └── base_mongo_test.py
 ├── data/
 │   ├── README.md                      # Project brief
 │   ├── requirements.txt
