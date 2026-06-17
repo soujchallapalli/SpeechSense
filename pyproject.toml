@@ -53,7 +53,10 @@ warn_return_any = "True"
 warn_unused_ignores = "True"
 show_error_codes = "True"
 
-
+[[tool.mypy.overrides]]
+module = ["vosk", "vosk.*"]
+ignore_missing_imports = true
+disallow_any_unimported = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

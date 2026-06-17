@@ -27,7 +27,7 @@ def _validate_wav_format(wf: wave.Wave_read) -> None:
         raise InvalidWavFormat("16-bit", f"sample width {wf.getsampwidth()}")
 
 
-def _build_recognizer(model_path: str, sample_rate: int) -> KaldiRecognizer:
+def _build_recognizer(model_path: str, sample_rate: int) -> KaldiRecognizer:  # type: ignore[no-any-unimported]
     """Create a Vosk recognizer with word-level timing enabled."""
     model = Model(model_path)
     recognizer = KaldiRecognizer(model, sample_rate)
@@ -47,7 +47,7 @@ def _to_segment(result: dict) -> dict | None:
     return None
 
 
-def _run_recognition(recognizer: KaldiRecognizer, wf: wave.Wave_read) -> list[dict]:
+def _run_recognition(recognizer: KaldiRecognizer, wf: wave.Wave_read) -> list[dict]:  # type: ignore[no-any-unimported]
     """Stream audio frames through the recognizer and collect transcript segments."""
     segments: list[dict] = []
 
@@ -84,12 +84,12 @@ def transcribe_wav_with_vosk(audio_path: str, model_path: str) -> list[dict]:
 
 
 class VoskModelNotFoundError(FileNotFoundError):
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         super().__init__(f"Vosk model not found at: {path}")
 
 
 class AudioFileNotFoundError(FileNotFoundError):
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         super().__init__(f"Audio file not found: {path}")
 
 
