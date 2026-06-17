@@ -174,9 +174,11 @@ cython_debug/
 .LSOverride
 data
 
-
 # Vosk model (large, downloaded)
 vosk-model-en-us-0.42-gigaspeech/
 
 # Generated transcription output
 output/
+
+# Dataset files like audio files
+datasets/*.wav
