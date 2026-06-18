@@ -1,8 +1,30 @@
+import logging
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 from pathlib import Path
 from time import sleep
 
 from speechsense.analyse import load_data, print_report, write_report
+from speechsense.config import AUDIO_FILE, RECORDING_START_TIME, VOSK_MODEL_DIR
+from speechsense.speech_to_text.speech_to_text_pipeline import process_audio_file
+
+# Configure logging to show INFO level and above
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+
+# Transcribes and performs speaker diarization on the audio file
+def transcribe_diarize_audio(
+    audio_file: str,
+    vosk_model_dir_name: str,
+    recording_start_time: datetime,
+) -> None:
+    logging.info("Transcribing the audio file to text and speaker diarization...")
+
+    process_audio_file(
+        audio_file,
+        vosk_model_dir_name,
+        recording_start_time=recording_start_time,
+    )
 
 
 # Initializes the CSV (or recording) and returns the output CSV path
@@ -53,6 +75,7 @@ def process_single_row(context: dict, row: str) -> None:
 
 
 def process(context: dict) -> None:
+    transcribe_diarize_audio(AUDIO_FILE, VOSK_MODEL_DIR, RECORDING_START_TIME)
     csv_path = record_to_file(context)
     with open(csv_path) as rows, ThreadPoolExecutor(max_workers=15) as executor:
         list(executor.map(lambda row: process_single_row(context, row), rows))

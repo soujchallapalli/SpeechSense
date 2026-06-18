@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from speechsense.speech_to_text import transcription, utils
-from speechsense.speech_to_text.pipeline import process_audio_file
+from speechsense.speech_to_text.speech_to_text_pipeline import process_audio_file
 
 # =====================================================================
 # build_csv_rows — data correctness
@@ -13,39 +13,41 @@ from speechsense.speech_to_text.pipeline import process_audio_file
 
 def test_timestamp_offset_by_start_seconds():
     start = datetime(2024, 1, 1, 10, 0, 0)
-    segs = [{"start": 65.0, "end": 66.0, "text": "x"}]
+    segs = [{"start": 65.0, "end": 66.0, "text": "x", "speaker": "SPEAKER_00"}]
     rows = utils.build_csv_rows(segs, start)
     assert rows[0]["timestamp"] == "2024-01-01T10:01:05"
 
 
 def test_time_taken_rounded_one_decimal():
     start = datetime(2024, 1, 1)
-    segs = [{"start": 1.0, "end": 3.46, "text": "x"}]
+    segs = [{"start": 1.0, "end": 3.46, "text": "x", "speaker": "SPEAKER_01"}]
     rows = utils.build_csv_rows(segs, start)
     assert rows[0]["time_taken_sec"] == "2.5"
 
 
 def test_time_taken_always_one_decimal_place():
     start = datetime(2024, 1, 1)
-    segs = [{"start": 0.0, "end": 2.0, "text": "x"}]
+    segs = [{"start": 0.0, "end": 2.0, "text": "x", "speaker": "SPEAKER_02"}]
     rows = utils.build_csv_rows(segs, start)
     assert rows[0]["time_taken_sec"] == "2.0"
 
 
 def test_zero_duration():
     start = datetime(2024, 1, 1)
-    segs = [{"start": 4.0, "end": 4.0, "text": "x"}]
+    segs = [{"start": 4.0, "end": 4.0, "text": "x", "speaker": "SPEAKER_00"}]
     rows = utils.build_csv_rows(segs, start)
     assert rows[0]["time_taken_sec"] == "0.0"
 
 
 def test_full_row_fields():
     start = datetime(2024, 1, 1, 10, 0, 0)
-    segs = [{"start": 0.0, "end": 2.5, "text": "hello"}]
-    rows = utils.build_csv_rows(segs, start)
+    segs = [{"start": 0.0, "end": 2.5, "text": "hello", "speaker": "SPEAKER_00"}]
+    with patch("speechsense.speech_to_text.utils.SPEAKER_NAME_MAP", {"SPEAKER_00": "Arron"}):
+        rows = utils.build_csv_rows(segs, start)
     assert rows == [
         {
             "timestamp": "2024-01-01T10:00:00",
+            "name": "Arron",
             "raw_text_vosk": "hello",
             "time_taken_sec": "2.5",
         }
@@ -169,17 +171,38 @@ def test_raises_on_non_16bit(patch_env):
 def patched_main():
     with (
         patch(
-            "speechsense.speech_to_text.pipeline.transcribe_wav_with_vosk", return_value=[{"text": "hi"}]
+            "speechsense.speech_to_text.speech_to_text_pipeline.transcribe_wav_with_vosk",
+            return_value=[{"start": 0.0, "end": 1.0, "text": "hi"}],
         ) as transcribe,
-        patch("speechsense.speech_to_text.pipeline.build_csv_rows", return_value=[{"x": 1}]) as build,
-        patch("speechsense.speech_to_text.pipeline.save_csv") as save,
+        patch(
+            "speechsense.speech_to_text.speech_to_text_pipeline.diarize_audio",
+            return_value=[{"start": 0.0, "end": 1.0, "speaker": "S0"}],
+        ) as diarize,
+        patch(
+            "speechsense.speech_to_text.speech_to_text_pipeline.assign_speakers",
+            return_value=[{"speaker": "S0", "start": 0.0, "end": 1.0, "text": "hi"}],
+        ) as assign,
+        patch(
+            "speechsense.speech_to_text.speech_to_text_pipeline.merge_consecutive_speakers",
+            return_value=[{"speaker": "S0", "start": 0.0, "end": 1.0, "text": "hi"}],
+        ) as merge,
+        patch("speechsense.speech_to_text.speech_to_text_pipeline.format_transcript", return_value="hi"),
+        patch("speechsense.speech_to_text.speech_to_text_pipeline.build_csv_rows", return_value=[{"x": 1}]) as build,
+        patch("speechsense.speech_to_text.speech_to_text_pipeline.save_csv") as save,
     ):
-        yield {"transcribe": transcribe, "build": build, "save": save}
+        yield {
+            "transcribe": transcribe,
+            "diarize": diarize,
+            "assign": assign,
+            "merge": merge,
+            "build": build,
+            "save": save,
+        }
 
 
 def test_defaults_start_time_to_now_when_none(patched_main):
     fixed = datetime(2024, 5, 5, 9, 30, 0)
-    with patch("speechsense.speech_to_text.pipeline.datetime") as mock_dt:
+    with patch("speechsense.speech_to_text.speech_to_text_pipeline.datetime") as mock_dt:
         mock_dt.now.return_value = fixed
         process_audio_file("audio.wav", "", None)
     mock_dt.now.assert_called_once()
