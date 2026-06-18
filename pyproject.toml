@@ -112,3 +112,7 @@ ignore = [
 
 [tool.ruff.format]
 preview = true
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["pyannote-audio", "soundfile", "torch", "pymongo"]
+DEP003 = ["speechsense"]
