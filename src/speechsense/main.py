@@ -2,21 +2,10 @@ from speechsense.initial_config import initialize
 from speechsense.pipeline import process
 
 
-def foo(bar: str) -> str:
-    """Summary line.
-
-    Extended description of function.
-
-    Args:
-        bar: Description of input argument.
-
-    Returns:
-        Description of return value
-    """
-
-    return bar
+def main() -> None:
+    context = initialize()
+    process(context)
 
 
 if __name__ == "__main__":  # pragma: no cover
-    context = initialize()
-    process(context)
+    main()
