@@ -1,5 +1,6 @@
 import logging
 import warnings
+from typing import cast
 
 import soundfile as sf
 import torch
@@ -17,12 +18,10 @@ _pipeline: Pipeline | None = None
 
 
 def _get_pipeline() -> Pipeline:
-    """Load the diarization pipeline on first use and cache it."""
     global _pipeline
-    if _pipeline is not None:
-        return _pipeline
-    _pipeline = Pipeline.from_pretrained(DIARIZATION_MODEL, token=HUGGINGFACE_TOKEN)
-    return _pipeline
+    if _pipeline is None:
+        _pipeline = Pipeline.from_pretrained(DIARIZATION_MODEL, token=HUGGINGFACE_TOKEN)
+    return cast(Pipeline, _pipeline)
 
 
 def diarize_audio(file_path: str) -> list[dict]:
