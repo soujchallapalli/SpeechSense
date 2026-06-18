@@ -48,7 +48,7 @@ def avg_speech_rate_per_speaker(df: pd.DataFrame) -> list[tuple[str, float]]:
     return [(str(name), float(round(rate, 2))) for name, rate in rates.items()]
 
 
-def print_report(df: pd.DataFrame) -> None:
+def generate_report(df: pd.DataFrame) -> str:
     most_w_name, most_w_count = most_words(df)
     least_w_name, least_w_count = least_words(df)
     total_time = total_speaking_time(df)
@@ -57,21 +57,50 @@ def print_report(df: pd.DataFrame) -> None:
     top_speakers = top_speakers_by_time(df)
     speech_rates = avg_speech_rate_per_speaker(df)
 
-    print(f"{'Metric':<35} {'Result'}")
-    print("-" * 55)
-    print(f"{'Most words':<35} {most_w_name}, {most_w_count} words")
-    print(f"{'Least words':<35} {least_w_name}, {least_w_count} words")
-    print(f"{'Total speaking time':<35} {total_time} seconds")
-    print(f"{'Avg speaking time per speaker':<35} {avg_time} seconds")
-    print(f"{'Most questions':<35} {most_q_name}, {most_q_count} question(s)")
+    lines = [
+        "# Meeting Report",
+        "",
+        "## Overview",
+        "",
+        "| Metric | Result |",
+        "| --- | --- |",
+        f"| Most words | {most_w_name}, {most_w_count} words |",
+        f"| Least words | {least_w_name}, {least_w_count} words |",
+        f"| Total speaking time | {total_time} seconds |",
+        f"| Avg speaking time per speaker | {avg_time} seconds |",
+        f"| Most questions | {most_q_name}, {most_q_count} question(s) |",
+        "",
+        "## Top Speakers by Time",
+        "",
+        "| Rank | Speaker | Time (seconds) |",
+        "| --- | --- | --- |",
+    ]
 
     for rank, (name, time) in enumerate(top_speakers, 1):
-        label = f"#{rank} speaker by time"
-        print(f"{label:<35} {name}, {time} seconds")
+        lines.append(f"| {rank} | {name} | {time} |")
+
+    lines += [
+        "",
+        "## Speech Rate per Speaker",
+        "",
+        "| Speaker | Avg words/second |",
+        "| --- | --- |",
+    ]
 
     for name, rate in speech_rates:
-        label = f"{name} avg speech rate"
-        print(f"{label:<35} {rate} words/second")
+        lines.append(f"| {name} | {rate} |")
+
+    lines.append("")
+    return "\n".join(lines)
+
+
+def write_report(df: pd.DataFrame, output_path: str) -> None:
+    report = generate_report(df)
+    Path(output_path).write_text(report)
+
+
+def print_report(df: pd.DataFrame) -> None:
+    print(generate_report(df))
 
 
 def main(csv_path: str) -> None:

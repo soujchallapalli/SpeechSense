@@ -3,8 +3,8 @@ name = "speechsense"
 version = "0.0.1"
 description = "A speech processing pipeline"
 authors = ["SpeechSense <SpeechSense>"]
-repository = "https://github.com/fpgmaas/SpeechSense"
-documentation = "https://fpgmaas.github.io/SpeechSense/"
+repository = "https://github.com/SpeechSense/SpeechSense"
+documentation = "https://speechsense.github.io/SpeechSense/"
 readme = "README.md"
 packages = [
   {include = "speechsense", from = "src"}
