@@ -11,13 +11,19 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<4.0"
+python = ">=3.10,<3.15"
 pandas = ">=2.0,<3.1"
 requests = ">=2.31"
 pymongo = {version = "^4.17.0", extras = ["srv"]}
+python-dotenv = "^1.2.2"
+pyannote-audio = "^4.0.4"
+soundfile = "^0.14.0"
+torch = "^2.12.0"
+vosk = "^0.3.45"
 
 [tool.poetry.scripts]
 correct-transcripts = "speechsense.correction_pipeline:main"
+speechsense = "speechsense.speech_to_text.main:main"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
@@ -48,7 +54,10 @@ warn_return_any = "True"
 warn_unused_ignores = "True"
 show_error_codes = "True"
 
-
+[[tool.mypy.overrides]]
+module = ["vosk", "vosk.*"]
+ignore_missing_imports = true
+disallow_any_unimported = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
