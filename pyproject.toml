@@ -3,8 +3,8 @@ name = "speechsense"
 version = "0.0.1"
 description = "A speech processing pipeline"
 authors = ["SpeechSense <SpeechSense>"]
-repository = "https://github.com/fpgmaas/SpeechSense"
-documentation = "https://fpgmaas.github.io/SpeechSense/"
+repository = "https://github.com/SpeechSense/SpeechSense"
+documentation = "https://speechsense.github.io/SpeechSense/"
 readme = "README.md"
 packages = [
   {include = "speechsense", from = "src"}
@@ -12,6 +12,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.15"
+pandas = ">=2.0,<3.1"
 requests = ">=2.31"
 pymongo = {version = "^4.17.0", extras = ["srv"]}
 python-dotenv = "^1.2.2"
@@ -108,3 +109,7 @@ ignore = [
 
 [tool.ruff.format]
 preview = true
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["pyannote-audio", "soundfile", "torch", "pymongo"]
+DEP003 = ["speechsense"]

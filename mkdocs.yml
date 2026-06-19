@@ -1,14 +1,14 @@
 site_name: SpeechSense
-repo_url: https://github.com/fpgmaas/SpeechSense
-site_url: https://fpgmaas.github.io/SpeechSense
+repo_url: https://github.com/SpeechSense/SpeechSense
+site_url: https://speechsense.github.io/SpeechSense
 site_description: A speech processing pipeline
 site_author: SpeechSense
 edit_uri: edit/main/docs/
-repo_name: fpgmaas/SpeechSense
-copyright: Maintained by <a href="https://fpgmaas.com">Florian</a>.
+repo_name: SpeechSense/SpeechSense
 
 nav:
   - Home: index.md
+  - Report: report.md
   - Modules: modules.md
 plugins:
   - search
@@ -43,7 +43,7 @@ theme:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/fpgmaas/SpeechSense
+      link: https://github.com/SpeechSense/SpeechSense
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/SpeechSense
 

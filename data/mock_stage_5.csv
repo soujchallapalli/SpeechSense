@@ -1,0 +1,29 @@
+timestamp,name,raw_text_vosk,text,time_taken_sec,question_flag,num_words,text_size_chars,speech_rate_wps,speaker_turn_id
+2026-04-28T10:00:05,Stelios,helo team today we discuss mobile app growth,"Hello team, today we discuss mobile app growth.",6.2,False,8,48,1.29,1
+2026-04-28T10:00:18,Mary,can we target students first,Can we target students first?,3.8,True,6,30,1.58,1
+2026-04-28T10:00:30,Kate,i think we need lower pricing for early users,I think we need lower pricing for early users.,5.1,False,10,47,1.96,1
+2026-04-28T10:00:40,Stelios,ok lets proceed,"Ok, let's proceed!",3.2,False,3,19,0.94,2
+2026-04-28T10:01:02,Mary,what about social media marketing,What about social media marketing?,4.5,True,5,33,1.11,2
+2026-04-28T10:01:15,Kate,we should focus on instagram and tiktok,We should focus on Instagram and TikTok.,4.8,False,8,40,1.67,2
+2026-04-28T10:01:28,Stelios,good idea lets allocate budget for that,"Good idea, let's allocate budget for that.",5.0,False,7,42,1.40,3
+2026-04-28T10:01:40,Mary,how much budget do we have,How much budget do we have?,3.6,True,6,28,1.67,3
+2026-04-28T10:01:55,Kate,i think around five thousand pounds,I think around five thousand pounds.,4.2,False,6,35,1.43,3
+2026-04-28T10:02:10,Stelios,thats enough for a small campaign,"That's enough for a small campaign.",4.1,False,7,35,1.71,4
+2026-04-28T10:02:25,Mary,should we hire a freelancer for design,Should we hire a freelancer for design?,4.4,True,7,38,1.59,4
+2026-04-28T10:02:38,Kate,yes i know someone who could help,"Yes, I know someone who could help.",3.9,False,7,35,1.79,4
+2026-04-28T10:02:50,Stelios,lets schedule a follow up meeting next week,"Let's schedule a follow-up meeting next week.",5.3,False,8,46,1.51,5
+2026-04-28T10:03:05,Mary,can we do it on wednesday,Can we do it on Wednesday?,4.0,True,7,27,1.75,5
+2026-04-28T10:03:18,Kate,wednesday works for me,Wednesday works for me.,3.3,False,4,22,1.21,5
+2026-04-28T10:03:30,Stelios,perfect wednesday it is,"Perfect, Wednesday it is.",3.0,False,4,25,1.33,6
+2026-04-28T10:03:42,Mary,do we need to prepare anything before then,Do we need to prepare anything before then?,4.7,True,8,42,1.70,6
+2026-04-28T10:03:55,Kate,i will prepare the competitor analysis,I will prepare the competitor analysis.,4.6,False,6,38,1.30,6
+2026-04-28T10:04:10,Stelios,i will work on the user survey results,I will work on the user survey results.,4.9,False,8,39,1.63,7
+2026-04-28T10:04:25,Mary,i can handle the social media plan,I can handle the social media plan.,3.7,False,7,35,1.89,7
+2026-04-28T10:04:38,Kate,should we also look at competitor pricing,Should we also look at competitor pricing?,4.3,True,7,41,1.63,7
+2026-04-28T10:04:50,Stelios,yes thats a great point,"Yes, that's a great point.",3.4,False,5,27,1.47,8
+2026-04-28T10:05:02,Mary,i think we are covering everything well,I think we are covering everything well.,4.1,False,7,40,1.71,8
+2026-04-28T10:05:15,Kate,agreed lets wrap up for today,"Agreed, let's wrap up for today.",3.5,False,6,32,1.71,8
+2026-04-28T10:05:28,Stelios,great meeting everyone thanks for joining,"Great meeting everyone, thanks for joining.",5.2,False,6,43,1.15,9
+2026-04-28T10:05:40,Mary,thanks bye,Thanks bye!,2.1,False,2,11,0.95,9
+2026-04-28T10:05:50,Kate,see you on wednesday,See you on Wednesday!,2.8,False,5,21,1.79,9
+2026-04-28T10:06:00,Stelios,bye everyone,Bye everyone!,1.9,False,2,13,1.05,10
