@@ -30,6 +30,14 @@ class BaseMongoRepository:
         result = self.collection.insert_one(row)
         return int(result.inserted_id)
 
+    def insert_many(self, rows: list[dict]) -> list:
+        """Inserts many documents into the collection."""
+        for row in rows:
+            if "_id" not in row:
+                raise ValueError("'_id'")
+        result = self.collection.insert_many(rows)
+        return result.inserted_ids
+
     def update(self, row_num: int, updated_row: dict) -> int:
         """Updates a document in the collection based on its _id."""
         result = self.collection.update_one({"_id": row_num}, {"$set": updated_row})

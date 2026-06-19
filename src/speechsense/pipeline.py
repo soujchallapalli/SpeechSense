@@ -3,6 +3,7 @@ from pathlib import Path
 from time import sleep
 
 from speechsense.analyse import load_data, print_report, write_report
+from speechsense.database.processed_db import ProcessedRepository
 from speechsense.validation import validate_row
 
 
@@ -26,11 +27,13 @@ def add_speaker_counter(context: dict, row: dict) -> dict:
     return row
 
 
-def write_to_new_csv(context: dict, row: dict) -> None:
+def write_processed_data(context: dict, row: dict) -> None:
     mutex = context["mutex"]
     sleep(3)
     mutex.acquire()
-    context["logging"].info(f"row is written to csv:{row}")
+    ProcessedTranscriptDB: ProcessedRepository = context["ProcessedTranscript"]
+    inserted_id = ProcessedTranscriptDB.insert(row)
+    context["logging"].info(f"Inserted row {inserted_id} into ProcessedRepository DB.")
     mutex.release()
     return
 
@@ -39,7 +42,7 @@ def write_to_new_csv(context: dict, row: dict) -> None:
 def process_single_row(context: dict, row: dict) -> None:
     sanitized_row = sanitize_with_ai(context, row)
     processed_row = validate_row(context, sanitized_row)
-    write_to_new_csv(context, processed_row)
+    write_processed_data(context, processed_row)
     return
 
 
