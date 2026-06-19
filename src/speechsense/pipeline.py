@@ -32,7 +32,7 @@ def write_processed_data(context: dict, row: dict) -> None:
     sleep(3)
     mutex.acquire()
     ProcessedTranscriptDB: ProcessedRepository = context["ProcessedTranscript"]
-    inserted_id = ProcessedTranscriptDB.insert(row)
+    inserted_id = ProcessedTranscriptDB.insert(row["_id"], row)
     context["logging"].info(f"Inserted row {inserted_id} into ProcessedRepository DB.")
     mutex.release()
     return
