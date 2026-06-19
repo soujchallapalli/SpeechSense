@@ -8,7 +8,6 @@ from speechsense.speech_to_text.diarization import assign_speakers, diarize_audi
 from .transcription import transcribe_wav_with_vosk
 from .utils import build_csv_rows, format_transcript, save_csv
 
-# Configure logging to show INFO level and above
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 

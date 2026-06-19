@@ -5,20 +5,27 @@ from pathlib import Path
 from time import sleep
 
 from speechsense.analyse import load_data, print_report, write_report
-from speechsense.config import AUDIO_FILE, RECORDING_START_TIME, VOSK_MODEL_DIR
+from speechsense.config import (
+    AUDIO_FILE,
+    CORRECTED_CSV_OUTPUT_PATH,
+    CSV_OUTPUT_PATH,
+    RECORDING_START_TIME,
+    VOSK_MODEL_DIR,
+)
+from speechsense.correction_pipeline import process_pipeline
 from speechsense.speech_to_text.speech_to_text_pipeline import process_audio_file
 
-# Configure logging to show INFO level and above
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 # Transcribes and performs speaker diarization on the audio file
 def transcribe_diarize_audio(
+    context: dict,
     audio_file: str,
     vosk_model_dir_name: str,
     recording_start_time: datetime,
 ) -> None:
-    logging.info("Transcribing the audio file to text and speaker diarization...")
+    context["logging"].info("Transcribing the audio file to text and speaker diarization...")
 
     process_audio_file(
         audio_file,
@@ -75,11 +82,18 @@ def process_single_row(context: dict, row: str) -> None:
 
 
 def process(context: dict) -> None:
-    transcribe_diarize_audio(AUDIO_FILE, VOSK_MODEL_DIR, RECORDING_START_TIME)
-    csv_path = record_to_file(context)
-    with open(csv_path) as rows, ThreadPoolExecutor(max_workers=15) as executor:
-        list(executor.map(lambda row: process_single_row(context, row), rows))
-    df = load_data(csv_path)
+    context["logging"].info("Starting the processing pipeline...")
+    transcribe_diarize_audio(context, AUDIO_FILE, VOSK_MODEL_DIR, RECORDING_START_TIME)
+    process_pipeline(input_path=CSV_OUTPUT_PATH, output_path=CORRECTED_CSV_OUTPUT_PATH)
+    context["logging"].info("Complete: diarized transcript corrected with AI -> %s", CORRECTED_CSV_OUTPUT_PATH)
+
+    with open(CORRECTED_CSV_OUTPUT_PATH) as f:
+        rows = f.readlines()
+
+    with ThreadPoolExecutor(max_workers=15) as executor:
+        _ = [executor.submit(process_single_row, context, row) for row in rows]
+
+    df = load_data(CORRECTED_CSV_OUTPUT_PATH)
     report_path = str(Path(__file__).resolve().parents[2] / "docs" / "report.md")
     write_report(df, report_path)
     print_report(df)

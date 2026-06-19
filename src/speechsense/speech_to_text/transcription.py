@@ -7,7 +7,6 @@ from vosk import KaldiRecognizer, Model
 
 from speechsense.config import FRAMES_PER_READ
 
-# Configure logging to show INFO level and above
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 

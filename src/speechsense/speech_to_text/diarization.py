@@ -11,7 +11,6 @@ from speechsense.config import DIARIZATION_MODEL, HUGGINGFACE_TOKEN
 
 warnings.filterwarnings("ignore", category=UserWarning, module="pyannote")
 
-# Configure logging to show INFO level and above
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 _pipeline: Pipeline | None = None

@@ -6,11 +6,8 @@ import logging
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 
-from speechsense.correction import (
-    OLLAMA_MODEL,
-    OLLAMA_URL,
-    correct_transcript,
-)
+from speechsense.config import OLLAMA_MODEL, OLLAMA_URL
+from speechsense.correction import correct_transcript
 
 logger = logging.getLogger(__name__)
 

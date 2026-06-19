@@ -193,3 +193,169 @@ SpeechSense/
 ├── Makefile               # Development workflow commands
 └── tox.ini                # Multi-version test config
 ```
+
+# Vosk and PyAnnote Setup Guide
+
+This project uses **Vosk** for offline speech-to-text transcription and **PyAnnote** for speaker diarization.
+
+---
+
+# Vosk Model Setup
+
+## Model: `vosk-model-en-us-0.42-gigaspeech`
+
+The recommended English Vosk model for this project is:
+
+```text
+vosk-model-en-us-0.42-gigaspeech
+```
+
+This is one of the larger and more accurate English models provided by Vosk and is designed for offline speech recognition.
+
+### Download
+
+Official Vosk model repository:
+
+https://alphacephei.com/vosk/models
+
+Download the model from the **English Models** section and extract it into your project directory.
+
+---
+
+# Hugging Face Token Setup (Required for PyAnnote)
+
+PyAnnote models are hosted on Hugging Face and require authentication before they can be downloaded.
+
+## 1. Create a Hugging Face Account
+
+Sign up or log in:
+
+- Login: https://huggingface.co/login
+- Sign Up: https://huggingface.co/join
+
+---
+
+## 2. Create an Access Token
+
+Navigate to:
+
+https://huggingface.co/settings/tokens
+
+### Steps
+
+1. Click **Create new token**
+2. Enter a name, for example:
+
+```text
+SpeechSense
+```
+
+3. Select **Read** permissions
+4. Click **Create token**
+
+---
+
+## 3. Copy and Save Your Token
+
+You will receive a token similar to:
+
+```text
+hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+> **Important:** Copy and store the token securely. Hugging Face will not display the full token again.
+
+---
+
+## 4. Accept PyAnnote Model Terms
+
+Before using PyAnnote, you must accept the license terms for the required models.
+
+Visit and accept access for:
+
+### Speaker Diarization Model
+
+https://huggingface.co/pyannote/speaker-diarization-3.1
+
+### Segmentation Model
+
+https://huggingface.co/pyannote/segmentation
+
+Click:
+
+```text
+Access repository
+```
+
+or
+
+```text
+Agree and access repository
+```
+
+on each page.
+
+---
+
+## 5. Authenticate Using Your Token
+
+### Option A: Using the CLI
+
+```bash
+huggingface-cli login
+```
+
+Paste your token when prompted.
+
+### Option B: Using Python
+
+```python
+from huggingface_hub import login
+
+login("hf_your_token_here")
+```
+
+---
+
+## 6. Verify Authentication
+
+Run:
+
+```bash
+huggingface-cli whoami
+```
+
+If authentication is successful, your Hugging Face username will be displayed.
+
+## 7. System Prerequisites: FFmpeg
+
+FFmpeg is a core system dependency for PyAnnote.
+
+Run:
+
+```bash
+brew install ffmpeg (for Mac)
+
+winget install Gyan.FFmpeg (for Windows)
+```
+
+# Model Caching
+
+When PyAnnote downloads the models for the first time:
+
+- Models are cached locally
+- Subsequent runs load from the cache
+- Internet access is no longer required
+- The Hugging Face token is not needed again unless the cache is cleared
+
+---
+
+# Useful Links
+
+| Resource                     | Link                                                    |
+| ---------------------------- | ------------------------------------------------------- |
+| Vosk Models                  | https://alphacephei.com/vosk/models                     |
+| Hugging Face                 | https://huggingface.co                                  |
+| Access Tokens                | https://huggingface.co/settings/tokens                  |
+| PyAnnote Speaker Diarization | https://huggingface.co/pyannote/speaker-diarization-3.1 |
+| PyAnnote Segmentation        | https://huggingface.co/pyannote/segmentation            |

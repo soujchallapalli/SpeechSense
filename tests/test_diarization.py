@@ -1,7 +1,5 @@
 from speechsense.speech_to_text import diarization
 
-# === assign_speakers — the overlap heuristic (most important) ==============
-
 
 def test_assign_picks_max_overlap():
     segs = [{"start": 1.0, "end": 4.0, "text": "x"}]
@@ -33,9 +31,6 @@ def test_assign_preserves_text_and_times():
 
 def test_assign_empty_segments_returns_empty():
     assert diarization.assign_speakers([], [{"start": 0, "end": 1, "speaker": "S"}]) == []
-
-
-# === merge_consecutive_speakers ============================================
 
 
 def test_merge_combines_same_speaker():

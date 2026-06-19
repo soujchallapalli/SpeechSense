@@ -6,10 +6,6 @@ import pytest
 from speechsense.speech_to_text import transcription, utils
 from speechsense.speech_to_text.speech_to_text_pipeline import process_audio_file
 
-# =====================================================================
-# build_csv_rows — data correctness
-# =====================================================================
-
 
 def test_timestamp_offset_by_start_seconds():
     start = datetime(2024, 1, 1, 10, 0, 0)
@@ -52,11 +48,6 @@ def test_full_row_fields():
             "time_taken_sec": "2.5",
         }
     ]
-
-
-# =====================================================================
-# transcribe_wav_with_vosk — segment assembly
-# =====================================================================
 
 
 def make_wav_mock(nchannels=1, sampwidth=2, framerate=16000, frame_chunks=None):
@@ -120,7 +111,6 @@ def test_empty_text_segment_skipped(patch_env):
 
 
 def test_text_present_but_no_result_skipped(patch_env):
-    # guard requires BOTH text and result truthy
     patch_env["wave_open"].return_value = make_wav_mock(frame_chunks=[b"data"])
     patch_env["recognizer"].AcceptWaveform.return_value = True
     patch_env["recognizer"].Result.return_value = json.dumps({"text": "hi", "result": []})
@@ -145,11 +135,6 @@ def test_start_end_from_first_and_last_word(patch_env):
     assert segs[0]["start"] == 1.0 and segs[0]["end"] == 1.9
 
 
-# =====================================================================
-# transcribe_wav_with_vosk — format validation
-# =====================================================================
-
-
 def test_raises_on_non_mono(patch_env):
     patch_env["wave_open"].return_value = make_wav_mock(nchannels=2)
     with pytest.raises(ValueError, match="mono"):
@@ -160,11 +145,6 @@ def test_raises_on_non_16bit(patch_env):
     patch_env["wave_open"].return_value = make_wav_mock(sampwidth=1)
     with pytest.raises(ValueError, match="16-bit"):
         transcription.transcribe_wav_with_vosk("audio.wav", "model/path")
-
-
-# =====================================================================
-# process_audio_file — the orchestration tests
-# =====================================================================
 
 
 @pytest.fixture

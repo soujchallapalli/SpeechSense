@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-from speechsense.initial_config import initialize
+from speechsense.config import initialize
 from speechsense.pipeline import process
 from speechsense.analyse import main as run_analysis
 

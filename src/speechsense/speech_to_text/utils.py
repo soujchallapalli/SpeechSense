@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 
 from speechsense.config import CSV_HEADERS, CSV_OUTPUT_PATH, SPEAKER_NAME_MAP
 
-# Configure logging to show INFO level and above
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 

@@ -2,8 +2,7 @@
 
 import requests
 
-OLLAMA_MODEL = "gemma3"
-OLLAMA_URL = "http://localhost:11434/api/generate"
+from speechsense.config import OLLAMA_MODEL, OLLAMA_URL
 
 CORRECTION_PROMPT = (
     "Correct this transcript. Fix spelling, punctuation, and capitalization "
