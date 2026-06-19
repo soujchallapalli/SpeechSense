@@ -2,7 +2,7 @@ import datetime
 from typing import Any
 
 
-def clean_string(context: dict, value: any, default: str = "EMPTY") -> str:
+def clean_string(context: dict, value: Any, default: str = "EMPTY") -> str:
     if value is None or type(value) is not str or str(value).strip() == "":
         context["logging"].warning(f"[PIPELINE WARNING]: Invalid string '{value}' found. Defaulting to '{default}'")
         return default
@@ -11,7 +11,7 @@ def clean_string(context: dict, value: any, default: str = "EMPTY") -> str:
     return cleaned
 
 
-def clean_numeric(context: dict, value: int | float, default: float = 0.0) -> float:
+def clean_numeric(context: dict, value: Any, default: float = 0.0) -> float:
     if value is None or str(value).strip() == "" or not isinstance(value, int | float):
         context["logging"].warning(
             f"[PIPELINE WARNING]: Invalid numeric value '{value}' found. Defaulting to '{default}'"
@@ -80,7 +80,7 @@ def reformat_timestamp(
 def validate_row(context: dict, row: dict) -> dict:
     print(f"\n--- Processing Pipeline Step for Row ID: {row['_id']} ---")
 
-    FIELD_TYPES_AND_DEFAULTS = {
+    FIELD_TYPES_AND_DEFAULTS: dict[str, tuple[str, Any]] = {
         "name": ("string", "UNKNOWN_SPEAKER"),
         "raw_text_vosk": ("string", "UNRECOGNIZED_TEXT"),
         "time_taken_sec": ("numeric", 0.0),
@@ -94,16 +94,16 @@ def validate_row(context: dict, row: dict) -> dict:
 
     new_row: dict[str, Any] = {}
     for key, value in row.items():
-        expected_type, default_value = FIELD_TYPES_AND_DEFAULTS.get(key, (None, None))
+        expected_type, default_value = FIELD_TYPES_AND_DEFAULTS.get(key, (None, ""))
 
         if expected_type == "timestamp":
-            new_row[key] = reformat_timestamp(context, value, default_value)
+            new_row[key] = reformat_timestamp(context, value, str(default_value))
         elif expected_type == "string":
-            new_row[key] = clean_string(context, value, default_value)
+            new_row[key] = clean_string(context, value, str(default_value))
         elif expected_type == "boolean":
-            new_row[key] = clean_bool(context, value, default_value)
+            new_row[key] = clean_bool(context, value, bool(default_value))
         elif expected_type == "numeric":
-            new_row[key] = clean_numeric(context, value, default_value)
+            new_row[key] = clean_numeric(context, value, float(default_value))
         else:
             new_row[key] = value  # Keep as is for other types
     return new_row

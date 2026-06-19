@@ -13,14 +13,14 @@ def record_to_file(context: dict) -> str:
 
 
 # Correct the Transcript With AI
-def sanitize_with_ai(context: dict, row: dict) -> str:
+def sanitize_with_ai(context: dict, row: dict) -> dict:
     sleep(3)
     context["logging"].info("AI processing done")
     return row
 
 
 # how many times this speaker talked so far
-def add_speaker_counter(context: dict, row: dict) -> str:
+def add_speaker_counter(context: dict, row: dict) -> dict:
     sleep(3)
     context["logging"].info("speaker counter added")
     return row
