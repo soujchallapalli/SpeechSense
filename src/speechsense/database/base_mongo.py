@@ -5,6 +5,13 @@ from pymongo.collection import Collection
 from pymongo.server_api import ServerApi
 
 
+class MissingIdError(ValueError):
+    """Exception raised when a row is missing the required '_id' field."""
+
+    def __init__(self, row: dict):
+        super().__init__(f"Validation Error: Row {row} is missing the required '_id' field.")
+
+
 class BaseMongoRepository:
     def __init__(
         self,
@@ -29,6 +36,14 @@ class BaseMongoRepository:
         row["_id"] = row_id
         result = self.collection.insert_one(row)
         return int(result.inserted_id)
+
+    def insert_many(self, rows: list[dict]) -> list:
+        """Inserts many documents into the collection."""
+        for row in rows:
+            if "_id" not in row:
+                raise MissingIdError(row)
+        result = self.collection.insert_many(rows)
+        return result.inserted_ids
 
     def update(self, row_num: int, updated_row: dict) -> int:
         """Updates a document in the collection based on its _id."""

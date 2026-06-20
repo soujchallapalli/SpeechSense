@@ -1,4 +1,4 @@
-from speechsense.data.base_mongo import BaseMongoRepository
+from speechsense.database.base_mongo import BaseMongoRepository
 
 
 class ProcessedRepository(BaseMongoRepository):
