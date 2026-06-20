@@ -1,14 +1,9 @@
 import sys
 from pathlib import Path
 
+from speechsense.analyse import main as run_analysis
 from speechsense.config import initialize
 from speechsense.pipeline import process
-from speechsense.analyse import main as run_analysis
-
-
-def foo(bar: str) -> str:
-    """Summary line."""
-    return bar
 
 
 def main() -> None:

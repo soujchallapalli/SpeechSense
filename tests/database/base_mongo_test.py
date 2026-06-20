@@ -1,6 +1,6 @@
 import mongomock
 import pytest
-from speechsense.data.base_mongo import BaseMongoRepository
+from speechsense.database.base_mongo import BaseMongoRepository
 
 
 @pytest.fixture(autouse=True)
@@ -82,3 +82,22 @@ def test_empty_collection(testing_db):
     testing_db.empty_collection()
     get_all_rows = testing_db.get_all()
     assert get_all_rows == []
+
+
+def test_insert_many(testing_db):
+    inserted_ids = testing_db.insert_many([
+        {"_id": 1, "name": "SpeechSenseUnitTest", "description": "A test row for unit testing."},
+        {"_id": 2, "name": "AnotherTest", "description": "Another test row."},
+    ])
+    assert inserted_ids == [1, 2]
+
+
+def test_insert_many_failure(testing_db):
+    with pytest.raises(ValueError) as exc_info:
+        testing_db.insert_many([
+            {"name": "SpeechSenseUnitTest", "description": "A test row for unit testing."},
+            {"name": "AnotherTest", "description": "Another test row."},
+        ])
+
+    # Optional: You can even check if the specific error message is correct
+    assert "missing the required '_id' field" in str(exc_info.value)
